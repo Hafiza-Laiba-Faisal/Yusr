@@ -1,0 +1,18 @@
+{
+  "surahs": [
+    {"id": 1, "name": "Al-Fatiha", "rukus": [{"index": 1, "end_ayah": 7}]},
+    {"id": 2, "name": "Al-Baqarah", "rukus": [
+      {"index": 1, "end_ayah": 7}, {"index": 2, "end_ayah": 20}, {"index": 3, "end_ayah": 29}, {"index": 4, "end_ayah": 39},
+      {"index": 5, "end_ayah": 46}, {"index": 6, "end_ayah": 59}, {"index": 7, "end_ayah": 61}, {"index": 8, "end_ayah": 71},
+      {"index": 9, "end_ayah": 82}, {"index": 10, "end_ayah": 108}, {"index": 11, "end_ayah": 121}, {"index": 12, "end_ayah": 141},
+      {"index": 13, "end_ayah": 147}, {"index": 14, "end_ayah": 152}, {"index": 15, "end_ayah": 163}, {"index": 16, "end_ayah": 167},
+      {"index": 17, "end_ayah": 176}, {"index": 18, "end_ayah": 182}, {"index": 19, "end_ayah": 188}, {"index": 20, "end_ayah": 196},
+      {"index": 21, "end_ayah": 210}, {"index": 22, "end_ayah": 216}, {"index": 23, "end_ayah": 221}, {"index": 24, "end_ayah": 228},
+      {"index": 25, "end_ayah": 231}, {"index": 26, "end_ayah": 235}, {"index": 27, "end_ayah": 242}, {"index": 28, "end_ayah": 248},
+      {"index": 29, "end_ayah": 253}, {"index": 30, "end_ayah": 257}, {"index": 31, "end_ayah": 260}, {"index": 32, "end_ayah": 266},
+      {"index": 33, "end_ayah": 273}, {"index": 34, "end_ayah": 281}, {"index": 35, "end_ayah": 283}, {"index": 36, "end_ayah": 286}
+    ]},
+    {"id": 30, "name": "An-Naba", "rukus": [{"index": 1, "end_ayah": 30}, {"index": 2, "end_ayah": 40}]},
+    {"id": 114, "name": "An-Nas", "rukus": [{"index": 1, "end_ayah": 6}]}
+  ]
+}
