@@ -4,45 +4,65 @@ Below is the high-level architecture diagram for the Yusr project, illustrating 
 
 ```mermaid
 graph TD
-    subgraph Client ["Client Layer"]
-        A[User Browser]
+    subgraph Client ["User Interface (React + Vite)"]
+        A[Web/Mobile Browser]
+        B[Audio Capture - Web Audio API]
+        C[State Management - React Query]
     end
 
-    subgraph Frontend ["Frontend (Vite + React)"]
-        B[React App]
-        C[Shadcn UI Components]
-        D[TanStack Query]
+    subgraph API ["Backend Layer (FastAPI)"]
+        D[API Router - main.py]
+        E[Feedback Service - feedback.py]
+        F[Metadata Service - quran_data.py]
+        G[(Local JSON Cache)]
     end
 
-    subgraph Backend ["Backend (FastAPI)"]
-        E[FastAPI Server]
-        F[Tajweed Analysis Service]
-        G[Quran Metadata Service]
-        H[Local Cache - quran_cache.json]
+    subgraph Data ["Data & AI Layer"]
+        H[(Supabase DB)]
+        I[Supabase Auth]
+        J[OpenRouter AI Service]
     end
 
-    subgraph External ["External Services"]
-        I[(Supabase - Auth & DB)]
-        J[OpenRouter - AI API]
-    end
-
-    %% Relationships
-    A <-->|HTTPS / JSON| B
-    B --- C
-    B --- D
-    D <-->|API Calls| E
-    E <-->|Data Extraction| F
-    E <-->|Metadata Retrieval| G
-    G --- H
-    E <-->|Auth & Storage| I
-    F <-->|AI Prompts| J
+    %% Workflow Connections
+    A <-->|1. Select Ayah| D
+    D <-->|2. Fetch Text| F
+    F --- G
+    B -->|3. Upload Recitation| E
+    E <-->|4. Analyze Tajweed| J
+    E <-->|5. Save Progress| H
+    A <-->|Auth Session| I
 ```
 
-### Component Details:
-1. **Frontend**: Built with **React** and **Vite**, using **TailwindCSS** for a premium look. It handles user interactions and voice recording for Tajweed.
-2. **Backend**: A **FastAPI** application that provides RESTful endpoints. It manages the business logic for Quranic recitation feedback.
-3. **Services**:
-    * **Tajweed Service**: Interacts with AI models (via **OpenRouter**) to provide feedback on pronunciation.
-    * **Metadata Service**: Manages Surah, Ayah, and Ruku data using a local JSON cache for high performance.
-4. **Database & Auth**: Powered by **Supabase**, providing secure user authentication and persistent storage for user progress.
-5. **AI Core**: Utilizes LLMs to analyze Arabic recitation and provide human-like feedback on Tajweed rules.
+## Detailed Workflow (Real-time Tajweed Analysis)
+
+1. **Session Initialization**: The user logs in via **Supabase Auth**. The frontend maintains the session.
+2. **Content Selection**: User selects a Surah/Ayah. The frontend fetches the Arabic text and metadata from the **FastAPI** backend, which uses a optimized **Local JSON Cache** for sub-millisecond lookups.
+3. **Voice Capturing**: As the user recites, the **Web Audio API** captures the audio stream.
+4. **Analysis Request**: The recorded audio is sent to the `/analyze` endpoint of the Backend.
+5. **AI Processing**: 
+    - The **Feedback Service** prepares the prompt with the reference text.
+    - It calls **OpenRouter** (external LLM) to analyze the phonetics and Tajweed rules.
+6. **Persistence**: The feedback results (scores, mistakes) are stored in **Supabase PostgreSQL** for history tracking.
+7. **Instant Feedback**: The frontend receives the JSON response and highlights the specific words or rules that need improvement using **Framer Motion** animations.
+
+## Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant B as FastAPI Backend
+    participant A as AI (OpenRouter)
+    participant D as DB (Supabase)
+
+    U->>F: Starts Recitation
+    F->>F: Record Audio
+    U->>F: Stops Recitation
+    F->>B: POST /analyze (Audio Blob + Ayah ID)
+    B->>B: Retrieve Reference Text from Cache
+    B->>A: Request Tajweed Analysis
+    A-->>B: Return Correction & Score
+    B->>D: Save Result to History
+    B-->>F: Return Feedback JSON
+    F->>U: Display Visual Highlights & Score
+```
